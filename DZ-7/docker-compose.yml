@@ -1,0 +1,19 @@
+---
+version: '3'
+services:
+    maven:
+        build:
+            context: ./maven/
+            dockerfile: maven.Dockerfile
+      restart: 'unless-stopped'
+      volumes:
+          - './volume-artifact:/root/artifact'
+    boxfuse-app-prod:
+        build:
+            context: ./boxfuse-app-prod/
+            dockerfile: boxfuse-app-prod.Dockerfile
+      restart: 'unless-stopped'
+      volumes:
+          - './volume-artifact:/root/artifact'
+      depends_on:
+          - maven
