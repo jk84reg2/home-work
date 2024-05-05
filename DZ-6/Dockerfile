@@ -1,21 +1,15 @@
 # ДЗ - урок №6
 # Упаковать Java приложение в Docker- контейнер. Процесс сборки производить также в контейнере.
 
-#FROM ubuntu:20.04
+FROM ubuntu:18.04
 
-#RUN apt update
-#RUN apt upgrade -y
-#RUN apt install default-jdk -y
-#RUN apt install maven -y
-#RUN apt install tomcat9 git -y
-
-FROM tomcat:9
-
-RUN apt update && apt upgrade -y
+RUN apt update
+RUN apt upgrade -y
+RUN apt install default-jdk -y
 RUN apt install git -y
 RUN apt install maven -y
+RUN apt install tomcat9 -y
+RUN git clone https://github.com/boxfuse/boxfuse-sample-java-war-hello.git
+RUN cd ./boxfuse-sample-java-war-hello && mvn package && cp ./target/hello-1.0.war /var/lib/tomcat9/webapps/
 
-RUN git clone https://github.com/kliakos/sparkjava-war-example.git
-RUN cd ./sparkjava-war-example/ && mvn package && cp ./target/sparkjava-hello-world-1.0.war /usr/local/tomcat/webapps
-
-EXPOSE 8080
+EXPOSE 8079
