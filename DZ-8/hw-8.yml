@@ -31,7 +31,7 @@
       clone: yes
 
   - name: Maven package & push app into app repo
-    command: cd /tmp/boxfuse/ && mvn package && cd /tmp/boxfuse/target/ && git init && git add . && git remote add origin https://github.com/jk84reg/test-dz/tree/master/DZ-8.git && git push -u origin master
+    command: cd /tmp/boxfuse/boxfuse-sample-java-war-hello && mvn package && cd /tmp/boxfuse/boxfuse-sample-java-war-hello/target/ && git init && git add . && git remote add origin https://github.com/jk84reg/test-dz/tree/master/DZ-8.git && git push -u origin master
 
 - name: PROD
   hosts: prod-app
