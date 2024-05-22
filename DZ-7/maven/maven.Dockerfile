@@ -1,4 +1,4 @@
-#  Dockerfile для сборки Java-приложения boxfuse
+#  HW-11__prod.Dockerfile для сборки Java-приложения boxfuse
 
 FROM ubuntu:20.04
 
