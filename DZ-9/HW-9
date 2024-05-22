@@ -1,0 +1,117 @@
+Написать Ansible роли, которые подготавливают сборочное и
+продовое окружение на 2-х нодах. На сборочной ноде
+производится сборка проекта, на продовой - запуск.
+
+то, что сделано с помощью плейбука ДЗ 8 сделать по ролям
+- роли
+- сколько
+- применить:
+
+переменнные
+хендлеры
+устанвока список
+
+
+###
+
+роль environment - default-jdk, git
+роль maven - maven
+роль build - сборка
+роль webserver - tomcat9
+
+cd ./roles
+
+### ansible-galaxy init environment
+
+nano ./environment/tasks/main.yml
+---
+- name: Update apt
+  apt: update_cache=yes
+
+- name: Ensure default-jdk & git packedge is present
+  apt: name={{item}} state=present
+  with_items:
+    - default-jdk
+    - git
+
+### ansible-galaxy init maven
+
+nano ./maven/tasks/main.yml
+---
+- name: Update apt
+  apt: update_cache=yes
+
+- name: Ensure maven packedge is present
+  apt: name={{item}} state=present
+  with_items:
+    - maven
+
+### ansible-galaxy init build
+
+nano ./build/vars/main.yml
+
+---
+boxfuse_path: /tmp/boxfuse
+
+nano ./build/tasks/main.yml
+
+- name: Clone Boxfuse repo
+  git: repo='https://github.com/boxfuse/boxfuse-sample-java-war-hello.git' dest={{ boxfuse_path }} version=master clone=yes
+
+- name: Maven package & push app into app repo
+  command: cd /tmp/boxfuse/boxfuse-sample-java-war-hello && mvn package && cd /tmp/boxfuse/boxfuse-sample-java-war-hello/target/ && git init && git add . && git remote add origin https://github.com/jk84reg/test-dz/tree/master/DZ-9.git && git push -u origin master
+
+
+### ansible-galaxy init webserver
+
+nano ./webserver/handlers/main.yml
+
+---
+- name: Restart tomcat9
+  service: name=tomcat9 state=restarted
+
+nano ./webserver/vars/main.yml
+
+---
+tomcat_webapps_path: /var/lib/tomcat9/webapps/
+
+nano ./webserver/tasks/main.yml
+
+---
+- name: Update apt
+  apt: update_cache=yes
+
+- name: Ensure tomcat9 packedge is present
+  apt: name={{item}} state=present
+  with_items:
+    - tomcat9
+
+- name: Get sparkjava-hello-world-1.0.war
+  git: repo=https://github.com/jk84reg/test-dz/tree/master/DZ-8.git dest={{ tomcat_webapps_path }} version=master clone=yes
+  notify:
+  - Restart tomcat9
+
+
+### ./ nano roles.yml
+
+---
+- name: Build VM config
+  hosts: build
+  become: yes
+
+  roles:
+    - environment
+    - maven
+    - build
+
+- name: Prod VM config
+  hosts: prod
+  become: yes
+
+  roles:
+    - environment
+    - webserver
+
+
+
+
