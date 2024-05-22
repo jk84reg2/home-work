@@ -1,5 +1,5 @@
-# HW-11__prod.Dockerfile - image container for build docker image and build app and push image into repository
-# ubuntu20.04_build_java_template
+# HW-11__prod.Dockerfile - image container for build docker image and build app and push image into registry
+# ubuntu20.04_build_java
 
 FROM ubuntu:20.04
 

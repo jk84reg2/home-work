@@ -1,29 +1,34 @@
 pipline {
   agent {
     docker {
-      image 'ubuntu20.04_build_java_template'
+      image 'Путь до DockerHub, в котором размещен образ контейнера для сборки артифакта - ubuntu20.04_build_java'
     }
   }
     stages {
-        stage ('Get project Boxfuse') {
+       stage ('Get prod app image container ubuntu20.04_prod_boxfuse-app') {
             steps {
-                git ' https://github.com/boxfuse/boxfuse-sample-java-war-hello.git'
+                git 'https://github.com/jk84reg2/home-work.git'
+            }
+       }
+       stage ('Get project Boxfuse') {
+            steps {
+                git 'https://github.com/boxfuse/boxfuse-sample-java-war-hello.git'
             }
         }
         stage ('Build Boxfuse') {
             steps {
-                sh 'mvn package'
+                sh 'cd /boxfuse-sample-java-war-hello && mvn package'
             }
         }
-        stage ('Create docker image') {
+        stage ('Create docker prod image container') {
             steps {
-                # скопировать артефакт в образ контейнера
-		        # собрать обращ контейнера docker build -t ubuntu20.04_prod_boxfuse-app
-		        # передать контейнер в докерхаб
-
+                sh 'cd /jk84reg2/home-work/DZ-11 && build -t ubuntu20.04_prod_boxfuse-app ./HW-11__prod.Dockerfile'
+                sh 'docker image tag ubuntu20.04_prod_boxfuse-app jk84reg/Boxfuse && docker login && docker push jk84reg/Boxfuse'
             }
         }
-
+        stage ('Run prod image container on prod node') {
+            steps {
+                sh 'ssh root@vm-prod && docker pull jk84reg/Boxfuse && docker run -d -p 8080:8080 ubuntu20.04_prod_boxfuse-app'
+            }
         }
-
-    }
+  }
