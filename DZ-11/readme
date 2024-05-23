@@ -1,0 +1,10 @@
+# Сборка и перенос сборочного образа образа в DockerHub
+
+mkdir docker
+cd docker
+nano HW-11__build.Dockerfile
+
+docker build -t ubuntu20.04_build_java:v1 -f HW-11__build.Dockerfile .
+docker image tag ubuntu20.04_build_java:v1 jk84reg2/boxfuse:v1
+docker login
+docker push jk84reg2/boxfuse:v1
