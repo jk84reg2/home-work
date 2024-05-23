@@ -23,7 +23,7 @@ pipline {
         stage ('Create docker prod image container') {
             steps {
                 sh 'cd /jk84reg2/home-work/DZ-11 && build -t ubuntu20.04_prod_boxfuse-app -f HW-11__prod.Dockerfile .'
-                sh 'docker image tag ubuntu20.04_prod_boxfuse-app jk84reg/Boxfuse && docker login && docker push jk84reg/Boxfuse'
+                sh 'docker image tag ubuntu20.04_prod_boxfuse-app jk84reg/boxfuse && docker login && docker push ubuntu20.04_prod_boxfuse-app'
             }
         }
         stage ('Run prod image container on prod node') {
