@@ -28,7 +28,7 @@ pipline {
         }
         stage ('Run prod image container on prod node') {
             steps {
-                sh 'ssh root@vm-prod && docker pull jk84reg/Boxfuse && docker run -d -p 8080:8080 ubuntu20.04_prod_boxfuse-app'
+                sh 'ssh root@vm-prod && docker pull jk84reg/boxfuse && docker run -d -p 8080:8080 ubuntu20.04_prod_boxfuse-app'
             }
         }
   }
