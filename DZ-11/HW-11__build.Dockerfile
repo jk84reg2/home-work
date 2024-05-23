@@ -5,6 +5,7 @@ FROM ubuntu:20.04
 
 RUN apt update
 RUN apt upgrade -y
+RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata
 RUN apt install -y default-jdk git maven docker.io
 
 EXPOSE 8080
