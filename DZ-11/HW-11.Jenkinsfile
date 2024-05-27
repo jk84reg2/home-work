@@ -1,7 +1,7 @@
 pipline {
   agent {
     docker {
-      image 'Путь до DockerHub, в котором размещен образ контейнера для сборки артифакта - ubuntu20.04_build_java'
+      image 'jk84reg2/boxfuse:v1'
     }
   }
     stages {
