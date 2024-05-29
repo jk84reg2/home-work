@@ -1,0 +1,36 @@
+---
+version: '3'
+services:
+
+    build-app:
+        build:
+            context: ./build-app/
+            dockerfile: build-app.Dockerfile
+        restart: 'unless-stopped'
+        volumes:
+          - '/root/docker-compose/volume_artifact:/root/artifact'
+
+    java-app-prod:
+        build:
+            context: ./java-app-prod/
+            dockerfile: java-app-prod.Dockerfile
+        restart: 'unless-stopped'
+        volumes:
+          - '/root/docker-compose/volume_artifact:/root/artifact'
+          - '/root/docker-compose/volume_app-config/root/app-config'
+        depends_on:
+          - build-app
+
+    mysql:
+        image: ubuntu/mysql:8.0-20.04_edge
+        restart: 'unless-stopped'
+        environment:
+            MYSQL_ROOT_PASSWORD: password
+            MYSQL_DATABASE: app42_db
+            MYSQL_USER: userdb
+            MYSQL_PASSWORD: userdb
+        volumes:
+          - '/root/docker-compose/volume_db:/var/lib/mysql'
+        depends_on:
+          - java-app-prod
+...
