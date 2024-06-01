@@ -1,0 +1,116 @@
+---
+- name: Create security group for build host
+  amazon.aws.ec2_security_group:
+    name: sg_build
+    description: Security group for build host
+    rules:
+      - proto: tcp
+        ports:
+          - 22
+        cidr_ip: 0.0.0.0/0
+
+- name: Create security group for prod host
+  amazon.aws.ec2_security_group:
+    name: sg_prod
+    description: Security group for prod host
+    rules:
+      - proto: tcp
+        ports:
+          - 22
+          - 8080
+        cidr_ip: 0.0.0.0/0
+
+- name: Create EC2 build host
+  amazon.aws.ec2_instance:
+    name: build
+    region: $aws_region
+    instance_type: $aws_instance_type
+    image_id: $amy_id
+    key_name: $key_name
+    count: 1
+    network:
+      assign_public_ip: true
+      security_group: sg_build
+    tags:
+      Environment: build
+    state: started
+
+- name: Create EC2 prod host
+  amazon.aws.ec2_instance:
+    name: prod
+    region: $aws_region
+    instance_type: $aws_instance_type
+    image_id: $amy_id
+    key_name: $key_name
+    count: 1
+    network:
+      assign_public_ip: true
+      security_group: sg_prod
+    tags:
+      Environment: prod
+    state: started
+
+- name: Build environment
+  hosts: build
+  become: yes
+
+  tasks:
+  - name: apt update
+    apt:
+      update_cache: yes
+
+  - name: Ensure default-jdk packedge is present
+    apt:
+      name: default-jdk
+      state: present
+
+  - name: Ensure git packedge is present
+    apt:
+      name: git
+      state: present
+
+  - name: Ensure maven packedge is present
+    apt:
+      name: maven
+      state: present
+
+  - name: Clone Boxfuse repo
+    git:
+      repo: 'https://github.com/boxfuse/boxfuse-sample-java-war-hello.git'
+      dest: /tmp/boxfuse
+      version: master
+      clone: yes
+
+  - name: Maven package & push app into app repo
+    command: cd /tmp/boxfuse/boxfuse-sample-java-war-hello && mvn package && cd /tmp/boxfuse/boxfuse-sample-java-war-hello/target/ && git init && git add . && git remote add origin https://github.com/jk84reg/test-dz/tree/master/DZ-8.git && git push -u origin master
+
+- name: PROD
+  hosts: prod
+  become: yes
+
+  tasks:
+  - name: apt update
+    apt:
+      update_cache: yes
+  - name: Ensure default-jdk packedge is present
+    apt:
+      name: default-jdk
+      state: present
+
+  - name: Ensure git packedge is present
+    apt:
+      name: git
+      state: present
+
+  - name: Ensure tomcat9 packedge is present
+    apt:
+      name: tomcat9
+      state: present
+
+  - name: Get sparkjava-hello-world-1.0.war
+    git:
+      repo: https://github.com/jk84reg/test-dz/tree/master/DZ-8.git
+      dest: /var/lib/tomcat9/webapps/
+      version: master
+      clone: yes
+...
