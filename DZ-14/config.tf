@@ -15,7 +15,6 @@ provider "yandex" {
 }
 
 
-
 # Image Ubuntu 20.04
 
 resource "yandex_compute_disk" "boot-disk-1" {
