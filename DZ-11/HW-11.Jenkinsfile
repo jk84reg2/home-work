@@ -22,7 +22,7 @@ pipline {
         }
         stage ('Create docker prod image container') {
             steps {
-		sh 'cp /root/boxfuse-sample-java-war-hello/target/hello-1.0.war /root/home-work/DZ-11'
+		        sh 'cp /root/boxfuse-sample-java-war-hello/target/hello-1.0.war /root/home-work/DZ-11'
                 sh 'cd /root/home-work/DZ-11 && docker build -t ubuntu18.04_prod_boxfuse-app -f HW-11__prod.Dockerfile .'
                 sh 'docker image tag ubuntu18.04_prod_boxfuse-app jk84reg2/boxfuse && docker login && docker push jk84reg2/boxfuse'
             }
