@@ -24,7 +24,6 @@ resource "yandex_compute_disk" "boot-disk-1" {
   zone     = "ru-central1-a"
   size     = "10"
   image_id = "fd84rmelvcpjp2jpo1gq"
-  folder_id = "fhmosvq9tattqinia4mv"
 
 # VM-1 - build
 
