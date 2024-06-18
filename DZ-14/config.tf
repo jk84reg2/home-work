@@ -1,4 +1,4 @@
-# Terraform provider info
+### Terraform provider info
 
 terraform {
   required_providers {
@@ -12,10 +12,11 @@ terraform {
 provider "yandex" {
   service_account_key_file = "/home/jkrb/terraform-ya/jkrb-key.json"
   zone = "ru-central1-a"
+  cloud_id="b1gtl0ndellhrrop3nc5"
+  folder_id="fhmosvq9tattqinia4mv"
 }
 
-
-# Image Ubuntu 20.04
+### Image Ubuntu 20.04
 
 resource "yandex_compute_disk" "boot-disk-1" {
   name     = "boot-disk-1"
@@ -24,11 +25,12 @@ resource "yandex_compute_disk" "boot-disk-1" {
   size     = "10"
   image_id = "fd84rmelvcpjp2jpo1gq"
 
-# VM-1 - build
+### VM-1 - build
 
 }
 resource "yandex_compute_instance" "vm-1" {
   name = "ubuntu-20-04_build"
+  description = "build"
 
   resources {
     cores  = 2
@@ -49,10 +51,11 @@ resource "yandex_compute_instance" "vm-1" {
   }
 }
 
-# VM-2 - prod
+### VM-2 - prod
 
 resource "yandex_compute_instance" "vm-2" {
   name = "ubuntu-20-04_prod"
+  description = "prod"
 
   resources {
     cores  = 2
@@ -73,7 +76,7 @@ resource "yandex_compute_instance" "vm-2" {
   }
 }
 
-#
+### Network
 
 resource "yandex_vpc_network" "network-1" {
   name = "network1"
